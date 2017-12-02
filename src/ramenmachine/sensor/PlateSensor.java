@@ -1,5 +1,7 @@
+package ramenmachine.sensor;
 
-public class Thermometer implements SensorInterface{
+
+public class PlateSensor implements SensorInterface{
 
 	@Override
 	public void turnOn() {
