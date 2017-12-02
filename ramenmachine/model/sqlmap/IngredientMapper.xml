@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="ramenmachine.model.sqlmap.IngredientMapper">
+
+	<select id = "getIngredientList" resultType = "Ingredient">
+		SELECT *
+		FROM INGREDIENT
+	</select>
+	
+	<!-- <insert id="registerIngredient" parameterType="Ingredient">
+		<selectKey keyProperty="xx" resultType="int" order="BEFORE">
+			SELECT SEQ_INGREDIENT.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO INGREDIENT(NUM, NAME, PRICE, TYPE)
+		VALUES(#{}, #{name}, #{price}, #{type})
+	</insert> -->
+	 <insert id="registerIngredient" parameterType="Ingredient">
+		<selectKey keyProperty="num" resultType="int" order="BEFORE">
+			SELECT SEQ_INGREDIENT.NEXTVAL FROM DUAL
+		</selectKey>
+        INSERT INTO INGREDIENT (NUM, NAME, PRICE, TYPE) 
+        VALUES (#{num}, #{name}, #{price}, #{type})
+    </insert>
+    
+	<update id="modifyIngredient" parameterType="Ingredient">
+		UPDATE INGREDIENT
+		SET NAME = #{name}, PRICE = #{price}, TYPE = #{type}
+		WHERE NUM = #{num}
+	</update>
+  
+  	<delete id="removeIngredient" parameterType="int">
+  		DELETE FROM INGREDIENT
+  		WHERE NUM = #{ingredientNum} 
+  	</delete>
+  
+</mapper>
