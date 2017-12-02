@@ -1,7 +1,7 @@
 package ramenmachine.payment;
 
 public class PaymentMediumDispenserFactory {
-	public PaymentMediumDispenser getCashMediumDispenser(String type) {
+	public PaymentMediumDispenser getPaymentMediumDispenser(String type) {
 		switch(type) {
 		case "cash":
 			return new CashDispenser();
