@@ -1,4 +1,4 @@
-package ramenmachine.controller;
+package ramenmachine.model.controller;
 
 import java.util.ArrayList;
 import ramenmachine.model.bean.Ingredient;

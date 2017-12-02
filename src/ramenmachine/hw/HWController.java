@@ -1,8 +1,7 @@
-package ramenmachine.controller;
+package ramenmachine.hw;
 
 import java.util.ArrayList;
 
-import ramenmachine.hw.HWInterface;
 import ramenmachine.model.bean.Ingredient;
 import ramenmachine.sensor.SensorInterface;
 
