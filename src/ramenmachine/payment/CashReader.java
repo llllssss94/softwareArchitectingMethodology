@@ -3,9 +3,9 @@ package ramenmachine.payment;
 public class CashReader implements PaymentMediumReader{
 
 	@Override
-	public void read(PaymentObject object) {
+	public int read() {
 		// TODO Auto-generated method stub
-		
+		return 0;
 	}
 
 }
