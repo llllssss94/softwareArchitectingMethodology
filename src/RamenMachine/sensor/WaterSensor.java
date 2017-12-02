@@ -1,3 +1,5 @@
+package ramenmachine.sensor;
+
 
 public class WaterSensor implements SensorInterface{
 

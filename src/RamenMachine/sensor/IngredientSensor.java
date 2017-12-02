@@ -1,3 +1,5 @@
+package ramenmachine.sensor;
+
 
 public class IngredientSensor implements SensorInterface{
 

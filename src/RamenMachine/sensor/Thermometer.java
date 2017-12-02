@@ -1,3 +1,5 @@
+package ramenmachine.sensor;
+
 
 public class Thermometer implements SensorInterface{
 
