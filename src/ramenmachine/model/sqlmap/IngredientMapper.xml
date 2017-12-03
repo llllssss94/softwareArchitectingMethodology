@@ -8,26 +8,20 @@
 	<select id = "getIngredientList" resultType = "Ingredient">
 		SELECT *
 		FROM INGREDIENT
+		ORDER BY NUM
 	</select>
 	
-	<!-- <insert id="registerIngredient" parameterType="Ingredient">
-		<selectKey keyProperty="xx" resultType="int" order="BEFORE">
-			SELECT SEQ_INGREDIENT.NEXTVAL FROM DUAL
-		</selectKey>
-		INSERT INTO INGREDIENT(NUM, NAME, PRICE, TYPE)
-		VALUES(#{}, #{name}, #{price}, #{type})
-	</insert> -->
 	 <insert id="registerIngredient" parameterType="Ingredient">
 		<selectKey keyProperty="num" resultType="int" order="BEFORE">
 			SELECT SEQ_INGREDIENT.NEXTVAL FROM DUAL
 		</selectKey>
-        INSERT INTO INGREDIENT (NUM, NAME, PRICE, TYPE) 
-        VALUES (#{num}, #{name}, #{price}, #{type})
+        INSERT INTO INGREDIENT (NUM, NAME, PRICE, TYPE, SENSORID, HWID) 
+        VALUES (#{num}, #{name}, #{price}, #{type}, #{sensorId}, #{hwId})
     </insert>
     
 	<update id="modifyIngredient" parameterType="Ingredient">
 		UPDATE INGREDIENT
-		SET NAME = #{name}, PRICE = #{price}, TYPE = #{type}
+		SET NAME = #{name}, PRICE = #{price}, TYPE = #{type}, SENSOR = #{sensorId}, HWID = #{hwId}
 		WHERE NUM = #{num}
 	</update>
   

@@ -5,6 +5,8 @@ public class Ingredient {
 	private String name;
 	private int price;
 	private String type;
+	private String sensorId;
+	private String hwId;
 	
 	public int getNum() {
 		return num;
@@ -29,5 +31,17 @@ public class Ingredient {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public String getSensorId() {
+		return sensorId;
+	}
+	public void setSensorId(String sensorId) {
+		this.sensorId = sensorId;
+	}
+	public String getHwId() {
+		return hwId;
+	}
+	public void setHwId(String hwId) {
+		this.hwId = hwId;
 	} 
 }

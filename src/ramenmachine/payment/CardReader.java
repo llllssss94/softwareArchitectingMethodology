@@ -1,8 +1,13 @@
 package ramenmachine.payment;
 
-public class CardReader implements PaymentMediumReader{
+import java.util.Scanner;
 
-	public void read(PaymentObject object) {
-		
+public class CardReader implements PaymentMediumReader {
+
+	public Object read() {
+		System.out.println("카드를 투입하세요.");
+		Scanner scan = new Scanner(System.in);
+		String strValue = scan.nextLine();
+		return strValue;
 	}
 }

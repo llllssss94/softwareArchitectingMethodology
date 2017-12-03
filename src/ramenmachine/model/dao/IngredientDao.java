@@ -8,10 +8,17 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import ramenmachine.model.bean.Ingredient;
 
-
+/**
+ * 
+ * @author Park SangHee
+ *
+ */
 public class IngredientDao {
     private SqlSessionFactory sqlSessionFactory = SqlSessionManager.getSqlSession();
-    
+    /**
+     * asdfasdfasdafd
+     * @return
+     */
     public ArrayList<Ingredient> getIngredientList() {
     	SqlSession session = sqlSessionFactory.openSession();
     	ArrayList<Ingredient> list = null;

@@ -1,20 +1,19 @@
 package ramenmachine.sensor;
 
-
 public class SensorFactory {
-	public SensorInterface createWaterSensor() {
+	public static SensorInterface createWaterSensor() {
 		return new WaterSensor();
 	}
 	
-	public SensorInterface createThermometer() {
+	public static SensorInterface createThermometer() {
 		return new Thermometer();
 	}
 	
-	public SensorInterface createPlateSensor() {
+	public static SensorInterface createPlateSensor() {
 		return new PlateSensor();
 	}
 	
-	public SensorInterface createIngredientSensor() {
-		return new IngredientSensor();
+	public static SensorInterface createIngredientSensor(String uid, String name) {
+		return new IngredientSensor(uid, name);
 	}
 }

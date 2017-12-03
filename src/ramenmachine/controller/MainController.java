@@ -1,21 +1,36 @@
 package ramenmachine.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
 
+import ramenmachine.hw.Dispensor;
 import ramenmachine.hw.HWController;
+import ramenmachine.hw.HWFactory;
+import ramenmachine.hw.HWInterface;
 import ramenmachine.model.bean.Ingredient;
-import ramenmachine.model.controller.DBController;
+
 import ramenmachine.model.dao.IngredientDao;
 import ramenmachine.payment.PaymentController;
+import ramenmachine.sensor.SensorFactory;
+import ramenmachine.sensor.SensorInterface;
+
 
 public class MainController {
 	private ArrayList<Ingredient> ingredientList;
 	private PaymentController paymentController = new PaymentController();
-	private DBController dbController = new DBController();
-	private HWController hwController = new HWController();
+	/*private DBController dbController = new DBController();
+	private HWController hwController = new HWController();*/
 
+	private ArrayList<Ingredient> ingredients;
+	private HashMap<String, SensorInterface> sensors;
+	private HashMap<String, HWInterface> hws;
+	private HashMap<String, Dispensor> dispensors;
+
+	private HWController hwController;
 	private String defaultNoodle = "진라면";
 	private String defaultSoup = "보통맛보통양";
 	private String defaultWater = "보통물";
@@ -31,13 +46,66 @@ public class MainController {
 	public ArrayList<Ingredient> getMenu(){
 		return ingredientList;
 	}
+	
+	public void initMachine() {
+		hws = new HashMap<>();
+		sensors = new HashMap<>();
+		dispensors = new HashMap<>();
+		
+		Collections.synchronizedMap(sensors);
+		Collections.synchronizedMap(hws);
+		Collections.synchronizedMap(dispensors);
+		
+		hws.put("HWInductionHeater", HWFactory.createHWInductionHeater());
+		hws.put("HWBoiler", HWFactory.createHWBoiler());
+		
+		sensors.put("WaterSensor", SensorFactory.createWaterSensor());
+		sensors.put("Thermometer", SensorFactory.createThermometer());
+		sensors.put("PlateSensor", SensorFactory.createPlateSensor());
+		
+		ingredients = new IngredientDao().getIngredientList();
+		for(Ingredient ingr : ingredients) {
+			Object obj = HWFactory.createHWIngredient(ingr.getHwId(),ingr.getName());
+			hws.put(ingr.getName(), (HWInterface)obj);
+			dispensors.put(ingr.getName(), (Dispensor)obj);
+			sensors.put(ingr.getName(), SensorFactory.createIngredientSensor(ingr.getSensorId(), ingr.getName()));
+		}
+		
+		hwController = new HWController(sensors, hws, dispensors);
+		
+		turnOn();
+	}
+	
+	
+	public void turnOn() {
+		Iterator<?> list = hws.values().iterator();
+		while(list.hasNext()) {
+			((HWInterface)list.next()).turnOn();
+		}
+		list = sensors.values().iterator();
+		while(list.hasNext()) {
+			((SensorInterface)list.next()).turnOn();
+		}
+	}
+	
+	public void turnOff() {
+		Iterator<?> list = hws.values().iterator();
+		while(list.hasNext()) {
+			((HWInterface)list.next()).turnOff();
+		}
+		list = sensors.values().iterator();
+		while(list.hasNext()) {
+			((SensorInterface)list.next()).turnOff();
+		}
+	}
+
 
 	public void showInitScreen()
 	{
 		Scanner scan = new Scanner(System.in);
 		String select = "";
-		ArrayList<Ingredient> ingredients = new IngredientDao().getIngredientList();
-
+		ingredientList = new IngredientDao().getIngredientList();
+		
 		while(!select.equals("quit"))
 		{
 			System.out.println("====================================================");
@@ -57,11 +125,11 @@ public class MainController {
 			else if(select.contains("2"))
 			{
 				LinkedHashMap<Ingredient, Integer> menu = new LinkedHashMap<>();
-				
+				menu.put(ingredientList.get(0), 1);
 				Loop1 : while(true)
 				{
 					System.out.println("select noodle type : "
-							+ "(1.굵은 2.일반 3.얇은 4.우동");
+							+ "(1.굵은 2.일반 3.얇은 4.우동)");
 					noodle = scan.nextLine();
 	
 					switch(noodle)
@@ -75,6 +143,9 @@ public class MainController {
 					case "3":
 						menu.put(searchIngredient("얇은 면"), 1);
 						break Loop1;
+					case "4":
+						menu.put(searchIngredient("우동 면"), 1);
+						break Loop1;
 					default:
 						break;
 					}
@@ -83,7 +154,7 @@ public class MainController {
 				Loop2 : while(true)
 				{
 					System.out.println("select soup type : "
-							+ "(1.신라면 2.안성탕면 3.진라면 4.우동");
+							+ "(1.신라면 2.안성탕면 3.진라면 4.우동)");
 					soup = scan.nextLine();
 					
 					switch(soup)
@@ -108,19 +179,19 @@ public class MainController {
 				Loop3 : while(true)
 				{
 					System.out.println("select water type : "
-							+ "(1.많이 2.일반 3.적게");
+							+ "(1.많이 2.일반 3.적게)");
 					water = scan.nextLine();
 					
 					switch(water)
 					{
 					case "1":
-						menu.put(searchIngredient("많이"), 1);
+						menu.put(searchIngredient("물"), 600);
 						break Loop3;
 					case "2":
-						menu.put(searchIngredient("일반"), 1);
+						menu.put(searchIngredient("물"), 520);
 						break Loop3;
 					case "3":
-						menu.put(searchIngredient("적게"), 1);
+						menu.put(searchIngredient("물"), 450);
 						break Loop3;
 					default:
 						break;
@@ -130,35 +201,59 @@ public class MainController {
 				Loop4 : while(true)
 				{
 					System.out.println("select additional seasoning : "
-							+ "1.계란 2.대파 3.마늘 4.치즈 5.소시지 6.스팸");
+							+ "1.계란 2.대파 3.마늘 4.치즈 5.소시지 6.스팸 7.그만");
 					seasoning = scan.nextLine();
 					
-					switch(soup)
+					switch(seasoning)
 					{
 					case "1":
-						menu.put(searchIngredient("계란"), 1);
-						break Loop4;
+						menu.put(searchIngredient("계란"), menu.containsKey(searchIngredient("계란"))? menu.get(searchIngredient("계란"))+1 : 1);
+						break;
 					case "2":
-						menu.put(searchIngredient("대파"), 1);
-						break Loop4;
+						menu.put(searchIngredient("대파"), menu.containsKey(searchIngredient("대파"))? menu.get(searchIngredient("대파"))+1 : 1);
+						break;
 					case "3":
-						menu.put(searchIngredient("마늘"), 1);
-						break Loop4;
+						menu.put(searchIngredient("마늘"), menu.containsKey(searchIngredient("마늘"))? menu.get(searchIngredient("마늘"))+1 : 1);
+						break;
 					case "4":
-						menu.put(searchIngredient("치즈"), 1);
-						break Loop4;
+						menu.put(searchIngredient("치즈"), menu.containsKey(searchIngredient("치즈"))? menu.get(searchIngredient("치즈"))+1 : 1);
+						break;
 					case "5":
-						menu.put(searchIngredient("소시지"), 1);
-						break Loop4;
+						menu.put(searchIngredient("소시지"), menu.containsKey(searchIngredient("소시지"))? menu.get(searchIngredient("소시지"))+1 : 1);
+						break;
 					case "6":
-						menu.put(searchIngredient("스팸"), 1);
+						menu.put(searchIngredient("스팸"), menu.containsKey(searchIngredient("스팸"))? menu.get(searchIngredient("스팸"))+1 : 1);
+						break;
+					case "7":
 						break Loop4;
 					default:
 						break;
 					}
 				}
+				
+				int amount = 1000;
+				Iterator<Ingredient>list = menu.keySet().iterator();
+				while(list.hasNext()) {
+					Ingredient ingr = list.next();
+					System.out.println(ingr.getName()+"의 갯수는 "+menu.get(ingr)+"개 입니다.");
+					amount += ingr.getPrice()*menu.get(ingr);
+				}
+				System.out.println("가격은 " + amount + "입니다.");
+				String type = "";
+				while(type.compareTo("card")!=0 && type.compareTo("cash")!=0) {
+					System.out.println("결제 수단을 선택해 주세요.\n 1.현금, 2카드");
+					type = scan.nextLine();
+					if(type.equals("1")) {
+						type = "cash";
+					} else if(type.equals("2")) {
+						type = "card";
+					}
+				}
+				paymentController.handlePayment(type, amount);
 
-				System.out.println(menu.values());
+				System.out.println("라면 제조에 들어갑니다.");
+				hwController.dispense(menu);
+				System.out.println("라면이 완성됐습니다.");
 			}
 			else
 			{
