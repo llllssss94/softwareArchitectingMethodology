@@ -60,11 +60,24 @@ public class HWController {
 	
 	public void dispense(HashMap<Ingredient, Integer> menu) {
 		Iterator<Ingredient> list = menu.keySet().iterator();
-		
+		boolean boil = false;
 		while(list.hasNext()) {
 			Ingredient ingr = list.next();
-			dispensors.get(ingr.getName()).dispense(menu.get(ingr));
-			System.out.println(ingr.getName() + "에서 " + menu.get(ingr) + " 개 출하합니다.");
+			if(ingr.getType().equals("그릇")) {
+				dispensors.get(ingr.getName()).dispense(menu.get(ingr));
+			} else if(ingr.getType().equals("면")) {
+				while(!sensors.get("PlateSensor").isConditionSatisfied()){
+					System.out.println("그릇이 Plate 위에 없습니다.");
+				}
+				dispensors.get(ingr.getName()).dispense(menu.get(ingr));
+			} else if(ingr.getType().equals("토핑") && !boil) {
+				boil = true;
+				System.out.println("1분이 지나 물이 끓기 시작합니다.");
+				dispensors.get(ingr.getName()).dispense(menu.get(ingr));
+			} else {
+				dispensors.get(ingr.getName()).dispense(menu.get(ingr));
+			}
+			//System.out.println(ingr.getName() + "에서 " + menu.get(ingr) + " 개 출하합니다.");
 		}
 	}
 	public static void main(String[] args) {

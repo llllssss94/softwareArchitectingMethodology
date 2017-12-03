@@ -42,6 +42,6 @@ public class HWIngredient implements HWInterface, Dispensor {
 	@Override
 	public void dispense(int n) {
 		// TODO Auto-generated method stub
-
+		System.out.println("재료("+name+")을 " + n + "개 놓습니다.");
 	}
 }

@@ -22,45 +22,25 @@ public class PaymentController {
 		coinReader = readerFactory.getPaymentMediumReader("coin");
 	}
 	
-	public void handlePayment(String type, int amount) {
-		switch(type) {
-		case "cash":
-			cashReader.read();
-			
-			cashDispenser.dispense();
-			coinDispenser.dispense();
-			break;
-		case "card":
-			cardReader.read();
-			
-			cardDispenser.dispense();
-			break;
-		case "coin":
-			coinReader.read();
-			
-			coinDispenser.dispense();
-			break;
-		}
-	}
 	
 	public void handlePayment(String type, int amount) {
 		int cash = 0;
 		switch(type) {
 		case "cash":
 			int cashValue = 0;
-			cashValue = cashReader.read();
+			cashValue = (int)cashReader.read();
 			int coinValue = 0;
-			coinValue = coinReader.read();
-			while(cashValue + coinValue >= amount) {
-				coinValue += coinReader.read();
+			coinValue = (int)coinReader.read();
+			while(cashValue + coinValue <= amount) {
+				coinValue += (int)coinReader.read();
 				if(cashValue + coinValue >= amount) 
 					break;
-				cashValue += cashReader.read();
+				cashValue += (int)cashReader.read();
 			}
 			
 			int rechargeValue = cashValue + coinValue - amount;
 			System.out.println("현금 "+amount+ " 만큼 결제합니다.");
-			cashDispenser.dispense(rechargeValue/1000);
+			cashDispenser.dispense(rechargeValue/1000 * 1000);
 			coinDispenser.dispense(rechargeValue%1000);	
 			break;
 		case "card":
