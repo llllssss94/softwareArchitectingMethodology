@@ -1,8 +1,6 @@
 package ramenmachine.hw;
 
 import ramenmachine.sensor.SensorInterface;
-import ramenmachine.sensor.Thermometer;
-import ramenmachine.sensor.WaterSensor;
 
 public class MaintenanceThread {
 	private WaterThread waterThread;

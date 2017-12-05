@@ -1,16 +1,16 @@
 package ramenmachine.payment;
 
 public class PaymentController {
-	PaymentMediumDispenserFactory dispenserFactory = new PaymentMediumDispenserFactory();
-	PaymentMediumReaderFactory readerFactory = new PaymentMediumReaderFactory();
+	private PaymentMediumDispenserFactory dispenserFactory = new PaymentMediumDispenserFactory();
+	private PaymentMediumReaderFactory readerFactory = new PaymentMediumReaderFactory();
 	
-	PaymentMediumDispenser cardDispenser;
-	PaymentMediumDispenser cashDispenser;
-	PaymentMediumDispenser coinDispenser;
+	private PaymentMediumDispenser cardDispenser;
+	private PaymentMediumDispenser cashDispenser;
+	private PaymentMediumDispenser coinDispenser;
 	
-	PaymentMediumReader cardReader;
-	PaymentMediumReader cashReader;
-	PaymentMediumReader coinReader;
+	private PaymentMediumReader cardReader;
+	private PaymentMediumReader cashReader;
+	private PaymentMediumReader coinReader;
 	
 	public PaymentController() {
 		cardDispenser = dispenserFactory.getPaymentMediumDispenser("card");
@@ -24,7 +24,6 @@ public class PaymentController {
 	
 	
 	public void handlePayment(String type, int amount) {
-		int cash = 0;
 		switch(type) {
 		case "cash":
 			int cashValue = 0;

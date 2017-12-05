@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 
 import ramenmachine.model.bean.Ingredient;
 import ramenmachine.model.dao.IngredientDao;
@@ -15,19 +14,62 @@ public class HWController {
 	private HashMap<String, SensorInterface> sensors;
 	private HashMap<String, HWInterface> hws;
 	private HashMap<String, Dispensor> dispensors;
+	private ArrayList<Ingredient> ingredients;
 	
 	private MaintenanceThread maintenanceThread;
 	
-	public HWController(HashMap<String, SensorInterface> sensors, HashMap<String, HWInterface> hws, HashMap<String, Dispensor> dispensors) {
-		this.sensors = sensors;
-		this.hws = hws;
-		this.dispensors = dispensors;
+	public HWController() {
+		hws = new HashMap<>();
+		sensors = new HashMap<>();
+		dispensors = new HashMap<>();
+
+		Collections.synchronizedMap(sensors);
+		Collections.synchronizedMap(hws);
+		Collections.synchronizedMap(dispensors);
+
+		hws.put("HWInductionHeater", HWFactory.createHWInductionHeater());
+		hws.put("HWBoiler", HWFactory.createHWBoiler());
+
+		sensors.put("WaterSensor", SensorFactory.createWaterSensor());
+		sensors.put("Thermometer", SensorFactory.createThermometer());
+		sensors.put("PlateSensor", SensorFactory.createPlateSensor());
+		
+		ingredients = new IngredientDao().getIngredientList();
+		for (Ingredient ingr : ingredients) {
+			String name = ingr.getName();
+			if(ingr.getType().equals("물")) {
+				name = "물";
+				if(!hws.containsKey("물")){
+					Object obj = HWFactory.createHWWaterTank();
+					hws.put(name, (HWInterface) obj);
+					dispensors.put(name, (Dispensor) obj);
+					sensors.put(name, SensorFactory.createIngredientSensor(ingr.getSensorId(), name));
+				}
+			} else {
+				Object obj = HWFactory.createHWIngredient(ingr.getHwId(), name);
+				hws.put(name, (HWInterface) obj);
+				dispensors.put(name, (Dispensor) obj);
+				sensors.put(name, SensorFactory.createIngredientSensor(ingr.getSensorId(), name));
+			}
+		}
 		
 		maintenanceThread = new MaintenanceThread(sensors.get("WaterSensor"), hws.get("물"), sensors.get("Thermometer"), hws.get("HWBoiler"));
-		maintainStatus();
+		run();
 	}
 	
-	public void maintainStatus() {
+	public ArrayList<Ingredient> getIngredients() {
+		return ingredients;
+	}
+	
+	public HashMap<String, HWInterface> getHWs() {
+		return hws;
+	}
+	
+	public HashMap<String, SensorInterface> getSensors() {
+		return sensors;
+	}
+	
+	public void run() {
 		maintenanceThread.run();
 	}
 	
@@ -79,35 +121,6 @@ public class HWController {
 			} else {
 				dispensors.get(ingr.getName()).dispense(menu.get(ingr));
 			}
-			//System.out.println(ingr.getName() + "에서 " + menu.get(ingr) + " 개 출하합니다.");
 		}
-	}
-	public static void main(String[] args) {
-		HWController con = null;
-		con.print();
-		
-		ArrayList<Ingredient> ingredients = new IngredientDao().getIngredientList();
-		LinkedHashMap<Ingredient, Integer> menu = new LinkedHashMap<>(); 
-		
-		for(Ingredient ingr : ingredients) {
-			if(ingr.getName().equals("일반면")) {
-				menu.put(ingr, 1);
-			} else if(ingr.getName().equals("진라면 스프")) {
-				menu.put(ingr, 2);
-			} else if(ingr.getName().equals("물 일반(550ml)")) {
-				menu.put(ingr, 1);
-			} else if(ingr.getName().equals("계란")) {
-				menu.put(ingr, 1);
-			} else if(ingr.getName().equals("대파")) {
-				menu.put(ingr, 1);
-			} else if(ingr.getName().equals("소시지")) {
-				menu.put(ingr, 2);
-			} else if(ingr.getName().equals("치즈")) {
-				menu.put(ingr, 1);
-			} 
-		}
-		System.out.println("-----------------------------------------------------");
-		System.out.println("주문에 들어갑니다.");
-		con.dispense(menu);
 	}
 }

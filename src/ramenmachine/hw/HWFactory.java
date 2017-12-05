@@ -13,7 +13,7 @@ public class HWFactory {
 		return new HWInductionHeater();
 	}
 	
-	public static HWInterface createHWIngredient(String uid,String name) {
-		return new HWIngredient(uid,name);
+	public static HWInterface createHWIngredient(String uid, String name) {
+		return new HWIngredient(uid, name);
 	}
 }

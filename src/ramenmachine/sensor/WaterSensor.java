@@ -28,7 +28,7 @@ public class WaterSensor implements SensorInterface{
 	}
 
 	@Override
-	public String getSensor() {
+	public String getSensorId() {
 		return uid;
 	}
 	

@@ -13,7 +13,7 @@ public class SqlSessionManager {
         Reader reader;
         try {
             reader = Resources.getResourceAsReader( resource );
-            sqlSession = new SqlSessionFactoryBuilder().build( reader );
+            sqlSession = new SqlSessionFactoryBuilder().build(reader);
         } catch (IOException e) {
             e.printStackTrace();
         }

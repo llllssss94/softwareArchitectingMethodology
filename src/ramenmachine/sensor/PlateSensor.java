@@ -28,7 +28,7 @@ public class PlateSensor implements SensorInterface{
 	}
 
 	@Override
-	public String getSensor() {
+	public String getSensorId() {
 		// TODO Auto-generated method stub
 		return uid;
 	}

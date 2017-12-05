@@ -2,7 +2,8 @@ package ramenmachine.payment;
 
 import java.util.Scanner;
 
-public class CashReader implements PaymentMediumReader{
+public class CashReader implements PaymentMediumReader {
+	private Scanner scan;
 
 	@Override
 	public Object read() {
@@ -11,7 +12,7 @@ public class CashReader implements PaymentMediumReader{
 		while (flag) {
 			try {
 				System.out.println("지폐를 투입하세요.");
-				Scanner scan = new Scanner(System.in);
+				scan = new Scanner(System.in);
 				String strValue = scan.nextLine();
 				value = Integer.parseInt(strValue);
 

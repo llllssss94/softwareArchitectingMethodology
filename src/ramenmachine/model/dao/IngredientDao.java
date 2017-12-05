@@ -1,7 +1,6 @@
 package ramenmachine.model.dao;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -15,10 +14,7 @@ import ramenmachine.model.bean.Ingredient;
  */
 public class IngredientDao {
     private SqlSessionFactory sqlSessionFactory = SqlSessionManager.getSqlSession();
-    /**
-     * asdfasdfasdafd
-     * @return
-     */
+    
     public ArrayList<Ingredient> getIngredientList() {
     	SqlSession session = sqlSessionFactory.openSession();
     	ArrayList<Ingredient> list = null;
