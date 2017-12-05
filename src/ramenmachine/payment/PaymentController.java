@@ -28,17 +28,19 @@ public class PaymentController {
 		switch(type) {
 		case "cash":
 			int cashValue = 0;
-			cashValue = (int)cashReader.read();
 			int coinValue = 0;
-			coinValue = (int)coinReader.read();
+			int rechargeValue= 0;
+			cashValue = (int)cashReader.read();
+			
 			while(cashValue + coinValue <= amount) {
 				coinValue += (int)coinReader.read();
 				if(cashValue + coinValue >= amount) 
 					break;
+				System.out.println("현재 투입하신 금액은 " + cashValue + coinValue + "입니다.");
 				cashValue += (int)cashReader.read();
 			}
 			
-			int rechargeValue = cashValue + coinValue - amount;
+			rechargeValue = cashValue + coinValue - amount;
 			System.out.println("현금 "+amount+ " 만큼 결제합니다.");
 			cashDispenser.dispense(rechargeValue/1000 * 1000);
 			coinDispenser.dispense(rechargeValue%1000);	
