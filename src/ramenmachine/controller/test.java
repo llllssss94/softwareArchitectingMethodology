@@ -7,7 +7,6 @@ public class test {
 		MainController mainController = new MainController();
 		mainController.initMachine();
 		mainController.showInitScreen();
-
 	}
 
 }

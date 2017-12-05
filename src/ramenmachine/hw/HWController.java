@@ -70,6 +70,8 @@ public class HWController {
 					System.out.println("그릇이 Plate 위에 없습니다.");
 				}
 				dispensors.get(ingr.getName()).dispense(menu.get(ingr));
+			} else if(ingr.getType().equals("물")){
+				dispensors.get("물").dispense(menu.get(ingr));
 			} else if(ingr.getType().equals("토핑") && !boil) {
 				boil = true;
 				System.out.println("1분이 지나 물이 끓기 시작합니다.");
